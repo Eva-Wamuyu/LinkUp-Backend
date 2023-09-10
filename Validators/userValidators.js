@@ -24,23 +24,31 @@ const validateRegisterSchema = Joi.object({
         .required()
         .pattern(new RegExp('^.{6}$'))
         .messages({
-            'password.base': 'Password should be a string',
-            'password.empty': 'Password is required',
-            'password.pattern.base': 'Password must be at least 6 characters long'
+            'string.base': 'Password should be a string',
+            'string.empty': 'Password is required',
+            'string.pattern.base': 'Password must be at least 6 characters long'
         }),
     
 });
 
 const validateloginSchema = Joi.object({
     emailOrUsername: Joi.string().required().messages({
-        'emailOrUsername.empty': 'Email or username is required',
+        'string.empty': 'Email or username is required',
        
     }),
     password: Joi.string().required().messages({
-        'password.empty': 'Password is required',
+        'string.empty': 'Password is required',
     }),
     
 })
 
+const validateUpdateSchema = Joi.object({
+    bio: Joi.string().max(100).messages({
+        'string.max': 'Bio is too long,max is 100 characters',
+    }),
+    profile_img: Joi.string()
+    
+})
 
-export {validateRegisterSchema,validateloginSchema};
+
+export {validateRegisterSchema,validateloginSchema,validateUpdateSchema};

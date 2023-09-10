@@ -1,10 +1,14 @@
 import { Router } from "express";
 import { registerUser,loginUser } from "../Controllers/auth.Controller.js";
-
+import { getUserByUsername,updateUserDetails,getUsersToFollow } from "../Controllers/user.Controller.js";
+import {checkUser,authenticateToken} from "../Middleware/index.js"
 
 const userRouter = Router();
 
-userRouter.post('/register', registerUser);
-userRouter.post('/login', loginUser);
+userRouter.post('/auth/register', registerUser);
+userRouter.post('/auth/login', loginUser);
+userRouter.get('/:username',checkUser, getUserByUsername);
+userRouter.patch('/',authenticateToken, updateUserDetails);
+userRouter.get('/all/connect',authenticateToken,getUsersToFollow)
 
 export default userRouter;

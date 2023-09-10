@@ -39,3 +39,66 @@ BEGIN
 	SELECT * from [User] where email = @emailOrUsername or username =  @emailOrUsername
     
 END;
+
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetUserInfo
+    @username VARCHAR(255),
+    @user_id VARCHAR(255)
+AS
+BEGIN
+    SELECT
+        CASE WHEN EXISTS (SELECT 1 FROM Follow WHERE follower_id = @user_id AND following_id = u.user_id) THEN 1 ELSE 0 END AS follows,
+        CASE WHEN EXISTS (SELECT 1 FROM Follow WHERE follower_id = u.user_id AND following_id = @user_id) THEN 1 ELSE 0 END AS followed,
+        (SELECT COUNT(*) FROM Follow WHERE following_id = u.user_id) AS followers,
+        (SELECT COUNT(*) FROM Follow WHERE follower_id = u.user_id) AS following,
+        (SELECT COUNT(*) FROM Post WHERE username = u.username) AS posts,
+        u.profile_image AS profile_image,
+        u.bio AS bio,
+        u.joined_at AS joined_at
+    FROM [User] u
+    WHERE u.username = @username;
+END
+
+
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_UpdateUserProfile
+    @user_id VARCHAR(255),
+    @profile_image VARCHAR(255) = NULL,
+    @bio VARCHAR(255)
+AS
+BEGIN
+    UPDATE [User]
+    SET
+        profile_image = CASE WHEN (@profile_image IS NULL OR @profile_image = '') THEN profile_image  ELSE @profile_image END,
+        bio = @bio
+    WHERE
+        user_id = @user_id;
+END;
+
+
+GO
+
+CREATE OR ALTER PROCEDURE usp_GetUnfollowedUsers
+    @user_id VARCHAR(255)
+AS
+BEGIN
+    SELECT TOP 30
+        u.user_id,
+        u.username,
+        u.email,
+        u.profile_image,
+        u.joined_at,
+        u.bio
+    FROM [User] u
+    WHERE u.user_id <> @user_id
+    AND NOT EXISTS (
+        SELECT 1
+        FROM Follow f
+        WHERE f.follower_id = @user_id
+        AND f.following_id = u.user_id
+    )
+END

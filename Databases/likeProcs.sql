@@ -39,7 +39,7 @@ BEGIN
 
 END;
 
-
+GO
 CREATE OR ALTER PROCEDURE usp_LikeUnlikeComment   
     @comment_id VARCHAR(255),
     @username VARCHAR(255)
