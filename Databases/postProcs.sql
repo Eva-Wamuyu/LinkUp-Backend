@@ -159,23 +159,23 @@ AS
 BEGIN
     SELECT
         P.post_id,
-        P.content AS post_content,
-        P.edited_at AS post_edited_at,
-        P.image_url AS post_image_url,
-        U.username AS post_username,
-        U.profile_image AS post_profile_image,
-        P.created_at AS post_created_at,
+        P.content,
+        P.edited_at,
+        P.image_url AS image_url_post,
+        U.username,
+        U.profile_image AS image_url_user,
+        P.created_at,
         (
             SELECT COUNT(*) 
             FROM [Like] L 
             WHERE L.post_id = P.post_id
-        ) AS likes_count,
+        ) AS num_likes,
         (
             SELECT COUNT(*) 
             FROM Comment C 
             WHERE C.post_id = P.post_id AND C.deleted = 0
-        ) AS comments_count,
-        CASE WHEN L.like_id IS NOT NULL THEN 1 ELSE 0 END AS userLiked
+        ) AS num_comments,
+        CASE WHEN L.like_id IS NOT NULL THEN 1 ELSE 0 END AS has_liked
     FROM Post P
     INNER JOIN [User] U ON P.username = U.username
     LEFT JOIN [Like] L ON P.post_id = L.post_id AND L.username = @username
@@ -198,7 +198,7 @@ BEGIN
             C.edited_at,
             U.username,
             U.profile_image,
-            CASE WHEN L.like_id IS NOT NULL THEN 1 ELSE 0 END AS userLiked,
+            CASE WHEN L.like_id IS NOT NULL THEN 1 ELSE 0 END AS has_liked,
             C.level_1_comment_id,
             (
                 SELECT COUNT(*) 
@@ -216,7 +216,7 @@ BEGIN
         CS.created_at,
         CS.edited_at,
         CS.username,
-        CS.userLiked,
+        CS.has_liked,
         CS.profile_image,
         CS.level_1_comment_id,
         CS.likes_count

@@ -9,11 +9,13 @@ BEGIN
         IF EXISTS (SELECT 1 FROM Follow WHERE follower_id = @follower_id AND following_id = @following_id)
         BEGIN
             DELETE FROM Follow WHERE follower_id = @follower_id AND following_id = @following_id;
+			SELECT 'User Unfollowed' AS Message
         END
         ELSE
         BEGIN
             INSERT INTO Follow (follower_id, following_id)
             VALUES (@follower_id, @following_id);
+			SELECT 'User Followed' AS Message
         END
     END
     ELSE

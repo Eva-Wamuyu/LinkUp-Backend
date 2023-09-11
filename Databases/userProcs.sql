@@ -53,10 +53,11 @@ BEGIN
         CASE WHEN EXISTS (SELECT 1 FROM Follow WHERE follower_id = u.user_id AND following_id = @user_id) THEN 1 ELSE 0 END AS followed,
         (SELECT COUNT(*) FROM Follow WHERE following_id = u.user_id) AS followers,
         (SELECT COUNT(*) FROM Follow WHERE follower_id = u.user_id) AS following,
-        (SELECT COUNT(*) FROM Post WHERE username = u.username) AS posts,
+        (SELECT COUNT(*) FROM Post WHERE username = u.username AND deleted=0) AS posts,
         u.profile_image AS profile_image,
         u.bio AS bio,
-        u.joined_at AS joined_at
+        u.joined_at AS joined_at,
+        u.username
     FROM [User] u
     WHERE u.username = @username;
 END
@@ -89,16 +90,18 @@ BEGIN
     SELECT TOP 30
         u.user_id,
         u.username,
-        u.email,
         u.profile_image,
         u.joined_at,
-        u.bio
+        u.bio,
+        CASE
+            WHEN EXISTS (
+                SELECT 1
+                FROM Follow f
+                WHERE f.follower_id = @user_id
+                AND f.following_id = u.user_id
+            ) THEN 1 
+            ELSE 0
+        END AS follows_user
     FROM [User] u
     WHERE u.user_id <> @user_id
-    AND NOT EXISTS (
-        SELECT 1
-        FROM Follow f
-        WHERE f.follower_id = @user_id
-        AND f.following_id = u.user_id
-    )
 END

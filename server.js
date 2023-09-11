@@ -15,6 +15,7 @@ app.use(express.json());
 
 app.use('/user', userRouter);
 app.use('/post',postRouter)
+app.use('/post',commentRouter)
 
 
 const PORT = 3000;
