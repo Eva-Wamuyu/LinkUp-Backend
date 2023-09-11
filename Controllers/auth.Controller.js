@@ -10,7 +10,7 @@ export const registerUser = async (req, res) => {
 		const { error } = validateRegisterSchema.validate(req.body);
 		if (error) {
 			return res.status(422).json({
-				status: 'error',
+				
 				message: error.message,
 			});
 		}
@@ -20,12 +20,12 @@ export const registerUser = async (req, res) => {
 
         if (message === 'Username already exists.') {
             return res.status(409).json({
-                status: 'error',
+                
                 message: "Woops,this username is already taken"
             });
         } else if (message === 'Email already exists.') {
             return res.status(409).json({
-                status: 'error',
+                
                 message
             });
         } else {
@@ -44,7 +44,7 @@ export const registerUser = async (req, res) => {
 			};
             const token = generateAccessToken(payload);
             return res.status(201).json({
-                status: 'success',
+                status: 'ok',
                 message: 'Account Created Successfully',
                 token,
                 user: {
@@ -55,7 +55,7 @@ export const registerUser = async (req, res) => {
 
 	} catch (error) {
     return res.status(500).json({
-            status: 'error',
+            
             message: 'Internal Server Error',    
         }); 
 	}
@@ -67,7 +67,7 @@ export const loginUser = async (req, res) => {
 		const { error } = validateloginSchema.validate(req.body);
 		if (error) {
 			return res.status(422).json({
-				status: 'error',
+				
 				message: error.message,
 			});
 		}
@@ -77,7 +77,7 @@ export const loginUser = async (req, res) => {
 
         if (user.length == 0) {
 			return res.status(404).json({
-				status: 'error',
+				
 				message: 'Woops, seems You Do Not have An Account',
 			});
         }else{
@@ -87,7 +87,7 @@ export const loginUser = async (req, res) => {
                     const token = generateAccessToken(payload);
     
                     return res.status(200).json({
-                            status: 'success',
+                            status: 'ok',
                             user: {
                                 username: user[0]['username'],
                                 user_id: user[0]['user_id'],
@@ -99,7 +99,7 @@ export const loginUser = async (req, res) => {
                   
                 } else {
                     return res.status(403).json({
-                        status: 'error',
+                       
                         message: 'Woops, Password is not correct',
                     });
                 }
@@ -107,7 +107,7 @@ export const loginUser = async (req, res) => {
 	} catch (error) {
     console.log(error);
     return res.status(500).json({
-            status: 'error',
+            
             message: 'Internal Server Error',
                
         });

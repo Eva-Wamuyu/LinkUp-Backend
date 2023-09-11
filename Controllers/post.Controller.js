@@ -8,7 +8,7 @@ import { validatePostSchema } from '../Validators/postValidators.js';
 export const createPost = async (req, res) =>{
     try {
         const username = req.info.subject;
-        console.log(req.info);
+        // console.log(req.info);
         const { error } = validatePostSchema.validate(req.body);
         if (error) {
 			return res.status(422).json({
@@ -36,7 +36,7 @@ export const createPost = async (req, res) =>{
             message: 'Error Adding Post',
         });
     } catch (error) {
-         console.log(error)
+        //  console.log(error)
         return res.status(500).json({
             status: 'error',
             message: 'Internal Server Error', 
@@ -72,7 +72,7 @@ export const editPost = async(req,res)=>{
             }); 
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
             status: 'error',
             message: 'Internal Server Error',
@@ -137,7 +137,7 @@ export const getUserPosts = async(req,res)=>{
         }); 
                 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
             status: 'error',
             message: 'Internal Server Error',
@@ -214,10 +214,11 @@ export const getPostCommentDetails = async(req,res)=>{
                 if (parentComment) {
                 
                 if (!parentComment.subcomments) {
-                      parentComment.subcomments = []; 
+                      parentComment.subcomments = [];
+                      parentComment.subcomments.push(comment); 
                   }
                   else{
-                    console.log(parentComment.subcomments)
+                    // console.log(parentComment.subcomments)
                     parentComment.subcomments.push(comment);
                   }
                 }
@@ -239,6 +240,15 @@ export const getPostCommentDetails = async(req,res)=>{
             message: 'Internal Server Error',
             
         });
+        
+    }
+}
+
+
+export const getPostsForFollowing = async(req,res)=>{
+    try {
+        
+    } catch (error) {
         
     }
 }

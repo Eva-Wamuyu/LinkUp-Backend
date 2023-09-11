@@ -16,7 +16,8 @@ app.use(express.json());
 app.use('/user', userRouter);
 app.use('/post',postRouter)
 app.use('/post',commentRouter)
-
+app.use('/follow',followRouter)
+app.use('/like',likeRouter)
 
 const PORT = 3000;
 app.listen(PORT)

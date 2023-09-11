@@ -1,0 +1,5 @@
+DB_NAME=Database name
+DB_USER=Database Username
+DB_SERVER=Your Server name
+DB_PWD=Database password
+JWT_SECRET=jwt secret key

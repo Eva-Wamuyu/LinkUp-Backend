@@ -22,7 +22,7 @@ const validateRegisterSchema = Joi.object({
         }),
     password: Joi.string()
         .required()
-        .pattern(new RegExp('^.{6}$'))
+        .pattern(new RegExp('^.{6,}'))
         .messages({
             'string.base': 'Password should be a string',
             'string.empty': 'Password is required',

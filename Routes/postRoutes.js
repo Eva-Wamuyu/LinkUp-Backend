@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createPost,deletePost,editPost,getAllPosts,getUserPosts,getPostCommentDetails } from "../Controllers/post.Controller.js";
+import { createPost,deletePost,editPost,getAllPosts,getUserPosts,getPostCommentDetails,getPostsForFollowing } from "../Controllers/post.Controller.js";
 import {authenticateToken,checkUser} from "../Middleware/index.js"
 
 const postRouter = Router();
@@ -10,6 +10,7 @@ postRouter.delete('/:post_id',authenticateToken,deletePost);//DELETE POST
 postRouter.get('/:post_id',checkUser,getPostCommentDetails);//GET ONE POST DETAILS
 postRouter.get('/user/:username',checkUser,getUserPosts); //GET POSTS FOR ONE USER
 postRouter.get('',checkUser,getAllPosts) //GET ALL POSTS
+postRouter.get('/all/following',authenticateToken, getPostsForFollowing) //GET POSTS BASED ON FOLLOWING
 
 
 
