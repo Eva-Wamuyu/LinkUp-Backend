@@ -54,10 +54,11 @@ BEGIN
         (SELECT COUNT(*) FROM Follow WHERE following_id = u.user_id) AS followers,
         (SELECT COUNT(*) FROM Follow WHERE follower_id = u.user_id) AS following,
         (SELECT COUNT(*) FROM Post WHERE username = u.username AND deleted=0) AS posts,
-        u.profile_image AS profile_image,
+        u.profile_image,
         u.bio AS bio,
-        u.joined_at AS joined_at,
-        u.username
+        u.joined_at,
+        u.username,
+        u.user_id
     FROM [User] u
     WHERE u.username = @username;
 END
@@ -101,7 +102,24 @@ BEGIN
                 AND f.following_id = u.user_id
             ) THEN 1 
             ELSE 0
-        END AS follows_user
+        END AS follows_user 
     FROM [User] u
     WHERE u.user_id <> @user_id
+    ORDER BY u.username ASC
 END
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetUserByUsername
+    @username VARCHAR(255)
+AS
+BEGIN
+	SELECT username from [User] WHERE username =  @username
+END;
+
+GO
+CREATE OR ALTER PROCEDURE usp_GetUserByMail
+    @email VARCHAR(255)
+AS
+BEGIN
+SELECT user_id,username,email from [User] where email = @email
+END;

@@ -73,3 +73,10 @@ select * from [User]
 select * from [Like]
 select * from Comment
 select * from Post
+
+CREATE TABLE ResetToken (
+  id INT PRIMARY KEY IDENTITY(1,1),
+  username VARCHAR(255),
+  token VARCHAR(15) NOT NULL,
+  FOREIGN KEY (username) REFERENCES [User](username)
+);

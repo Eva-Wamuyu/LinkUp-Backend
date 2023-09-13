@@ -42,7 +42,7 @@ export const updateUserDetails = async(req,res)=>{
         }
         const {bio, profile_image} = req.body;
         const response = await DB.exec('usp_UpdateUserProfile',{user_id, bio, profile_image})
-        console.log(response)
+        // console.log(response)
         return res.status(200).json({
             status: 'ok',
             message: 'Updated profile successfully'  
@@ -63,7 +63,8 @@ export const getUsersToFollow = async(req,res)=>{
         const user_id = req.info.issuer;
         const response = await DB.exec('usp_GetUnfollowedUsers',{user_id})
         const users = response.recordset
-        if(users.length > 0) {
+        console.log()
+        if(users.length >= 0) {
             return res.status(200).json({
                 status: 'ok',
                 users
@@ -92,7 +93,7 @@ export const getUserProfile = async(req,res)=>{
         if(user.length > 0){
             return res.status(200).json({
                 status: 'ok',
-                user,
+                user: user[0],
             }); 
         }
         

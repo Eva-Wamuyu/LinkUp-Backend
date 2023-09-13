@@ -13,12 +13,13 @@ const validateRegisterSchema = Joi.object({
             'string.pattern.base': 'Username can only start with a letter and can only contain numbers, letters and underscores-No Spaces'
         }),
     email: Joi.string()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+        .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/
+        )
         .required()
         .messages({
             'string.base': 'Email should be in the right format',
             'string.empty': 'Email is required',
-            'string.email': 'Email must be a valid email address'
+            'string.pattern.base': 'Email must be a valid email address'
         }),
     password: Joi.string()
         .required()
@@ -46,9 +47,22 @@ const validateUpdateSchema = Joi.object({
     bio: Joi.string().max(100).messages({
         'string.max': 'Bio is too long,max is 100 characters',
     }),
-    profile_img: Joi.string()
+    profile_image: Joi.string().allow(null)
     
 })
 
 
-export {validateRegisterSchema,validateloginSchema,validateUpdateSchema};
+const validateResetEmail = Joi.object({
+    email: Joi.string()
+    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/
+    )
+    .required()
+    .messages({
+        'string.base': 'Email should be in the right format',
+        'string.empty': 'Email is required',
+        'string.pattern.base': 'Email must be a valid email address'
+    }),
+})
+
+
+export {validateRegisterSchema,validateloginSchema,validateUpdateSchema,validateResetEmail};

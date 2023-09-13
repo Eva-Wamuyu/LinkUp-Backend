@@ -3,3 +3,6 @@ DB_USER=Database Username
 DB_SERVER=Your Server name
 DB_PWD=Database password
 JWT_SECRET=jwt secret key
+EMAIL=email to use for sending mail
+EMAIL_PWD= password for email(app password)
+FE_URL= url for reset password page frontend, //http://localhost:4200/auth/reset/password

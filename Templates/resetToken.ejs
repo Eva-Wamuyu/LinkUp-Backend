@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password Instructions</title>
+
+    <style>
+        p{
+            color: #000;
+            font-size: 16px;
+        }
+        h1{
+            color: #FFA500;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th><h1>LinkUp</h1></th>
+        </tr>
+
+        <tr>
+            <td>
+               <h2> Hello <%= username %></h2>
+               <p>
+                Someone has requested a link to change your password, 
+                and you can do this through the link below.
+               </p>
+               <p>
+                <a href="<%= link %>"><%= link %></a>
+                <%link%>
+               </p>
+               <p>
+                If you didn't request this, please ignore this email.
+               </p>
+               <p>
+                Your password won't change until you access the link above and create a new one.
+               </p>
+            </td>
+        </tr>
+
+    </table>
+    
+</body>
+</html>

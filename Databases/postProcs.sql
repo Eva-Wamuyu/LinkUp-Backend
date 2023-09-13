@@ -137,7 +137,7 @@ BEGIN
         U.profile_image AS image_url_user, 
         CASE WHEN EXISTS (
             SELECT 1 FROM [Like] L2
-            WHERE L2.post_id = P.post_id AND L2.username = @username
+            WHERE L2.post_id = P.post_id AND L2.username = @username2
         ) THEN 1 ELSE 0 END AS has_liked
     FROM Post P 
     INNER JOIN [User] U ON P.username = U.username
@@ -178,7 +178,7 @@ BEGIN
         CASE WHEN L.like_id IS NOT NULL THEN 1 ELSE 0 END AS has_liked
     FROM Post P
     INNER JOIN [User] U ON P.username = U.username
-    LEFT JOIN [Like] L ON P.post_id = L.post_id AND L.username = @username
+    LEFT JOIN [Like] L ON P.post_id = L.post_id AND L.username = @username2
     WHERE P.post_id = @post_id;
 END
 GO

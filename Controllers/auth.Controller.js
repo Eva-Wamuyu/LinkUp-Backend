@@ -2,8 +2,10 @@ import { DB } from '../DBHelpers/index.js';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { generateAccessToken } from '../Middleware/index.js';
-import { validateRegisterSchema, validateloginSchema } from '../Validators/userValidators.js';
-
+import { validateRegisterSchema, validateloginSchema,validateResetEmail } from '../Validators/userValidators.js';
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv'; dotenv.config();
+import { sendResetLink } from '../MailService/sendResetLink.js';
 
 export const registerUser = async (req, res) => {
 	try {
@@ -114,3 +116,106 @@ export const loginUser = async (req, res) => {
         
 	}
 };
+
+export const confirmToken = async(req,res)=>{
+
+    const username = req.info.subject;
+    const user_id = req.info.issuer;
+
+    return res.status(200).json({
+        status: 'ok',
+        user: {
+            username: username,
+            user_id: user_id,
+        },
+    });
+
+}
+
+export const resetPassword = async(req,res)=>{
+    try {
+        
+       const {error} = validateResetEmail.validate(req.body)
+       if(error){
+        return res.status(422).json({
+            message: error.message
+       })
+       }
+       const email = req.body.email
+       const result = await DB.exec('usp_GetUserByMail',{email})
+       
+       if(result.rowsAffected[0] == 0){
+        return res.status(404).json({
+            message: 'User Not Found'
+       })
+       }
+       else{
+            const user = result.recordset[0];
+			const user_mail = user.email;
+			const username = user.username;
+            
+            const token = Math.random().toString(36).slice(2, 8);
+			const response = await DB.exec('usp_AddToken', { username, token });
+            
+            if(response.rowsAffected[0] == 1){
+            const encrypted = jwt.sign({token,username},process.env.JWT_SECRET,{
+                expiresIn: '3h'
+            })
+			const link = `${process.env.FE_URL}${encrypted}`;
+			sendResetLink(user_mail, username, link);
+
+			return res.status(200).json({
+				status: 'success',
+				message: 'Reset Link Sent To Your Email',
+			});
+        }
+        return res.status(500).json({
+            message: 'Internal Server Error',
+        });
+       }
+    } catch (error) {
+      
+        return res.status(500).json({
+            message: 'Internal Server Error',
+        });
+    }
+}
+
+export const updatePassword = async(req,res)=>{
+    try {
+        const encrypted = req.params.token
+        let details = {}
+        jwt.verify(encrypted,process.env.JWT_SECRET,(err,decoded)=>{
+            if(err instanceof jwt.TokenExpiredError){
+                return res.status(403).json({message: "Token expired"});
+            }
+            if(err){
+                return res.status(403).json({message: err});
+            }
+            details = decoded;
+        })
+        
+        const result = await DB.exec('usp_CheckToken',{username:details.username,token:details.token})
+        if(result.rowsAffected == 1){
+        const password = req.body.password;
+        const hashed_password = await bcrypt.hash(password, 5);
+        const res_ = await DB.exec('usp_UpdatePassword',{password:hashed_password,username:details.username});
+
+        if(res_.rowsAffected == 1){
+            return res.status(200).json({
+                status: "ok",
+                message: 'Password updated successfully',
+            });
+        }
+    }
+    else{
+        return res.status(404).json({
+            message: 'Reset Link Expired, Use the latter link',
+    });  
+    }
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Internal Server Error',
+        });
+    }
+}
