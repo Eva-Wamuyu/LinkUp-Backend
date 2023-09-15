@@ -19,7 +19,7 @@ END;
 GO
 CREATE OR ALTER PROCEDURE usp_EditComment  
     @username VARCHAR(255),  
-    @comment_id VARCHAR(255),  
+    @comment_id INT,  
     @content VARCHAR(255)  
 AS  
 BEGIN  
@@ -74,3 +74,12 @@ BEGIN
     VALUES (@comment_id, @username, @content);
     SELECT 'Subcomment added successfully.' AS Message;
 END;
+
+
+
+CREATE OR ALTER PROCEDURE usp_GetUserComments
+@username VARCHAR(255)
+AS BEGIN
+SELECT comment_id, content, created_at,edited_at,level_1_comment_id from Comment where username = @username AND deleted=0 ORDER BY created_at
+END
+

@@ -147,5 +147,30 @@ export const createSubComment = async(req,res)=>{
     }
 }
 
+export const getUserComments = async(req,res)=>{
+    try {
+        const username = req.params.username;
+
+        const result = await DB.exec('usp_GetUserByUsername',{username})
+
+        if(result.rowsAffected == 0){
+            return res.status(404).json({
+                message: 'User not found', 
+            });
+        }
+        else{
+            const response = await DB.exec('usp_GetUserComments',{username})
+            console.log(response)
+            return res.status(200).json({
+                status: "ok",
+                comments:response.recordset 
+            });
+        }  
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Internal Server Error', 
+        });
+    }
+}
 
 
