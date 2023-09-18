@@ -14,13 +14,12 @@ export const followUser = async(req,res)=>{
 
         if(message == 'User with that Id not Found'){
             return res.status(404).json({
-                status: 'error',
                 message: 'User with that Id not Found',   
             });
         }
         else{
             return res.status(200).json({
-                status: 'success',
+                status: 'ok',
                 message
             });
         }        
@@ -28,7 +27,6 @@ export const followUser = async(req,res)=>{
     } catch (error) {
         // console.log(error);
         return res.status(500).json({
-            status: 'error',
             message: 'Internal Server Error',
                
         });
@@ -42,19 +40,17 @@ export const getFollowers = async(req,res)=>{
         if(response.recordset.length >= 0){
             const followers = response.recordset
             return res.status(200).json({
-                status: 'success',
+                status: 'ok',
                 followers  
             });
         }
         else{
             return res.status(404).json({
-                status: 'error',
                 message: 'Followers not found',   
             });
         } 
     } catch (error) {
         return res.status(500).json({
-            status: 'error',
             message: 'Internal Server Error',
         });
     }
@@ -69,20 +65,20 @@ export const getFollowing = async(req,res)=>{
         if(response.recordset.length >= 0){
             const following = response.recordset
             return res.status(200).json({
-                status: 'success',
+                status: 'ok',
                 following     
             });
         }
         else{
             return res.status(404).json({
-                status: 'error',
+               
                 message: 'Followers not found',   
             });
         } 
     } catch (error) {
         return res.status(500).json({
-            status: 'error',
             message: 'Internal Server Error',
         });
     }
 }
+

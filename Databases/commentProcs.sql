@@ -76,7 +76,7 @@ BEGIN
 END;
 
 
-
+GO
 CREATE OR ALTER PROCEDURE usp_GetUserComments
 @username VARCHAR(255)
 AS BEGIN

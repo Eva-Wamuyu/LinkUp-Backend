@@ -7,8 +7,9 @@ export const getUserByUsername = async(req,res)=>{
         const user_id = req.info.issuer || null;
 
         const response = await DB.exec('usp_GetUserInfo',{username, user_id});
-        const user = response.recordset
-        if(user.length > 0){
+        
+        if(response.rowsAffected == 1){
+            const user = response.recordset
             return res.status(200).json({
                 status: 'ok',
                 user,
@@ -51,9 +52,9 @@ export const updateUserDetails = async(req,res)=>{
         
     } catch (error) {
         return res.status(500).json({
-          
-            message: 'Internal Server Error'  
-        }); 
+            message: 'Internal Server Error',
+               
+        });
     }
 }
 

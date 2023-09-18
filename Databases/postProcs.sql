@@ -178,7 +178,7 @@ BEGIN
         CASE WHEN L.like_id IS NOT NULL THEN 1 ELSE 0 END AS has_liked
     FROM Post P
     INNER JOIN [User] U ON P.username = U.username
-    LEFT JOIN [Like] L ON P.post_id = L.post_id AND L.username = @username2
+    LEFT JOIN [Like] L ON P.post_id = L.post_id AND L.username = @username
     WHERE P.post_id = @post_id;
 END
 GO

@@ -44,7 +44,7 @@ const validateloginSchema = Joi.object({
 })
 
 const validateUpdateSchema = Joi.object({
-    bio: Joi.string().max(100).messages({
+    bio: Joi.string().allow(null, ' ').max(100).messages({
         'string.max': 'Bio is too long,max is 100 characters',
     }),
     profile_image: Joi.string().allow(null)

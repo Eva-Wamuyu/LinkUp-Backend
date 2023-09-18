@@ -56,6 +56,7 @@ export const registerUser = async (req, res) => {
         }
 
 	} catch (error) {
+   
     return res.status(500).json({
             
             message: 'Internal Server Error',    
@@ -165,7 +166,7 @@ export const resetPassword = async(req,res)=>{
 			sendResetLink(user_mail, username, link);
 
 			return res.status(200).json({
-				status: 'success',
+				status: 'ok',
 				message: 'Reset Link Sent To Your Email',
 			});
         }
