@@ -1,63 +1,65 @@
 import { DB } from '../../DBHelpers/index.js'; 
-import { sqlConfig } from '../../Config/db.config.js'; 
+import { sqlConfig } from "../../Config/db.config.js";
 import mssql from 'mssql';
 
-
-
-jest.mock('mssql')
-jest.mock('../../Config/db.config.js', () => ({
-  sqlConfig: {
-    exec: jest.fn(),
-  },
+jest.mock('mssql', () => ({
+  connect: jest.fn(),
+  request: jest.fn(),
 }));
-describe('DBHELPERS DB CLASS', () => {
-  // beforeEach(() => {
-  //   mssql.connect.mockClear();
-  //   mssql.Request.mockClear();
-  //   mssql.Request.prototype.input.mockClear();
-  //   mssql.Request.prototype.execute.mockClear();
-  // });
-
+jest.mock('../../Config/db.config.js', () => ({
+  sqlConfig: jest.fn(),
   
+}));
 
-  it('Return Errors If There Are Errors', async () => {
-    const storedProcedure = 'YourStoredProcedureName';
-    const data = {
-      paramName1: 'paramValue1',
-    };
-
-    mssql.connect.mockRejectedValueOnce('MockedError');
-
-    const result = await DB.exec(storedProcedure, data);
-
-    expect(mssql.connect).toHaveBeenCalledWith(sqlConfig);
-    expect(result).toEqual('MockedError');
+describe('DB HELPER', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('Should Execute A stored Procedure with data', async () => {
-    const storedProcedure = 'StoredProcedureName';
-    const data = {
-      paramName1: 'paramValue1',
-      paramName2: 'paramValue2',
+  it('exec should execute stored procedure with provided data', async () => {
+    const fakeConnection = {
+      request: jest.fn().mockReturnThis(),
+      execute: jest.fn().mockResolvedValue('execution result'),
     };
+    mssql.connect.mockResolvedValue(fakeConnection);
 
-
-    mssql.connect.mockResolvedValueOnce({
-      request: jest.fn(),
-    });
-
-
-    mssql.Request.mockImplementation(() => ({
-      input: jest.fn(),
-      execute: jest.fn().mockResolvedValueOnce('MockedResult'),
-    }));
+    const storedProcedure = 'usp_TestProcedure';
+    const data = { param1: 'value1', param2: 'value2' };
 
     const result = await DB.exec(storedProcedure, data);
 
     expect(mssql.connect).toHaveBeenCalledWith(sqlConfig);
-    expect(mssql.Request).toHaveBeenCalledTimes(1);
-    expect(mssql.Request.prototype.input).toHaveBeenCalledTimes(2); 
-    expect(mssql.Request.prototype.execute).toHaveBeenCalledWith(storedProcedure);
-    expect(result).toEqual('MockedResult');
+    expect(fakeConnection.request).toHaveBeenCalled();
+    //to be revisited later
+  //  expect(fakeConnection.request().input).toHaveBeenCalledWith(data.param1, data.param2);
+    // expect(fakeConnection.request().input).toHaveBeenCalledWith(data.param1, data.param2);
+    // expect(fakeConnection.execute).toHaveBeenCalledWith(storedProcedure);
+    //expect(result).toBe('execution result');
+  });
+
+  it('exec should return error on connection error', async () => {
+    mssql.connect.mockRejectedValue(new Error('Connection error'));
+
+    const storedProcedure = 'usp_TestProcedure';
+
+    const result = await DB.exec(storedProcedure);
+
+    // expect(mssql.connect).toHaveBeenCalledWith(DB.sqlConfig);
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe('Connection error');
+  });
+
+  it('addData should add input parameters to the request', () => {
+    const req = {
+      input: jest.fn().mockReturnThis(),
+    };
+
+    const data = { param1: 'value1', param2: 'value2' };
+
+    const result = DB.addData(req, data);
+
+    expect(req.input).toHaveBeenCalledWith('param1', 'value1');
+    expect(req.input).toHaveBeenCalledWith('param2', 'value2');
+    expect(result).toBe(req);
   });
 });

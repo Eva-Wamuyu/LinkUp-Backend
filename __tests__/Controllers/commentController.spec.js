@@ -347,7 +347,7 @@ describe("COMMENTS CONTROLLER- CREATE COMMENT", () =>{
             message
           });
         
-
+        jest.clearAllMocks();
     })
 
     it ("Should raise error 500 for DB error ", async() => {
@@ -371,7 +371,7 @@ describe("COMMENTS CONTROLLER- CREATE COMMENT", () =>{
             
             message: 'Internal Server Error'
           });
-        
+        jest.clearAllMocks();
     })
 })
 
@@ -380,7 +380,7 @@ describe("COMMENTS CONTROLLER- GET USER COMMENTS", () =>{
     afterEach(() => {
         jest.clearAllMocks();
     });
-    it ("Should raise error if user is not found", async() => {
+    it ("Should execute the get user proc", async() => {
         const reqMock = {
             params :{
                 username: "username",
@@ -391,10 +391,23 @@ describe("COMMENTS CONTROLLER- GET USER COMMENTS", () =>{
         expect(DB.exec).toHaveBeenCalledWith('usp_GetUserByUsername', {
             username: reqMock.params.username,
         });
-        // expect(resMock.status).toHaveBeenCalledWith(404);
-        // expect(resMock.json).toHaveBeenCalledWith({
-        //     message: 'User not found', 
-        // });
+        
+
+    })
+
+    it ("Should raise error if user is not found", async() => {
+        const reqMock = {
+            params :{
+                username: "username",
+            }
+        }
+        await DB.exec.mockResolvedValue({ rowsAffected: [0]});
+        await getUserComments(reqMock, resMock);
+       
+        expect(resMock.status).toHaveBeenCalledWith(404);
+        expect(resMock.json).toHaveBeenCalledWith({
+            message: 'User not found', 
+        });
 
     })
 
@@ -417,7 +430,7 @@ describe("COMMENTS CONTROLLER- GET USER COMMENTS", () =>{
     it ("Should return comments in a list if the user has comments", async() => {
         const reqMock = {
             params:{
-               post_id: "1231",
+               usermame: "1231",
             }
         }
         const testresult = [

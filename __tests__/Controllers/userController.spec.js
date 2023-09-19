@@ -1,5 +1,5 @@
 import { DB } from '../../DBHelpers/index.js'; 
-import { getUserByUsername,updateUserDetails } from '../../Controllers/user.Controller.js';
+import { getUserByUsername,updateUserDetails,getUsersToFollow } from '../../Controllers/user.Controller.js';
 import { validateUpdateSchema } from '../../Validators/userValidators.js';
 
 
@@ -157,6 +157,62 @@ describe("USER CONTROLLER, UPDATE USER DETAILS",()=>{
         }
         await DB.exec.mockRejectedValueOnce(new Error('Database error'));
         await updateUserDetails(reqMock, resMock);
+        expect(resMock.status).toHaveBeenCalledWith(500);
+        expect(resMock.json).toHaveBeenCalledWith({
+            message: 'Internal Server Error'  
+        });
+        jest.clearAllMocks();
+    });
+
+});
+
+
+describe("USER CONTROLLER, GET USERS TO FOLLOW",()=>{
+    
+    it('should call the right procedure when fetching the users', async () => {
+        const reqMock = {
+            info: {
+                issuer: "user_id",
+            }
+        };        
+        DB.exec.mockResolvedValue({recordset: []});
+        await getUsersToFollow(reqMock, resMock);
+        expect(DB.exec).toHaveBeenCalledWith(
+            'usp_GetUnfollowedUsers',{
+             user_id: reqMock.info.issuer,
+            }
+        )
+        jest.clearAllMocks();
+    });
+
+    it('should return a list of users empty or not in an array', async () => {
+        const reqMock = {
+            info: {
+                issuer: "user_id",
+            }
+        };
+
+        DB.exec.mockResolvedValue({recordset: []});
+        await getUsersToFollow(reqMock, resMock);
+        expect(resMock.status).toHaveBeenCalledWith(200);
+        expect(resMock.json).toHaveBeenCalledWith({
+            status: 'ok',
+            users: []  
+        });
+       
+        jest.clearAllMocks();
+    });
+
+
+    it('should return a 500 For Database Error found', async () => {
+        const reqMock = {
+            info: {
+                issuer: "user_id",
+            }
+           
+        }
+        await DB.exec.mockRejectedValueOnce(new Error('Database error'));
+        await getUsersToFollow(reqMock, resMock);
         expect(resMock.status).toHaveBeenCalledWith(500);
         expect(resMock.json).toHaveBeenCalledWith({
             message: 'Internal Server Error'  

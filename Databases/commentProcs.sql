@@ -77,9 +77,20 @@ END;
 
 
 GO
-CREATE OR ALTER PROCEDURE usp_GetUserComments
-@username VARCHAR(255)
-AS BEGIN
-SELECT comment_id, content, created_at,edited_at,level_1_comment_id from Comment where username = @username AND deleted=0 ORDER BY created_at
-END
-
+CREATE OR ALTER  PROCEDURE usp_GetUserComments  
+@username VARCHAR(255)  
+AS BEGIN  
+SELECT   
+    c.comment_id,  
+    c.content,  
+    c.created_at,  
+    p.post_id,  
+    p.content as post_content,  
+    p.image_url,  
+    p.created_at AS post_created_at,  
+    p.edited_at AS post_edited_at  
+FROM Comment AS c  
+INNER JOIN Post AS p ON c.post_id = p.post_id AND p.deleted=0  
+WHERE c.username = @username AND c.deleted = 0  
+ORDER BY c.created_at;  
+END  
