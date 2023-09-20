@@ -64,7 +64,7 @@ export const getUsersToFollow = async(req,res)=>{
         const user_id = req.info.issuer;
         const response = await DB.exec('usp_GetUnfollowedUsers',{user_id})
         const users = response.recordset
-        console.log()
+        console.log(users)
         if(users.length >= 0) {
             return res.status(200).json({
                 status: 'ok',
@@ -78,6 +78,7 @@ export const getUsersToFollow = async(req,res)=>{
             }); 
         }
        }catch (error){
+        console.log(error.message)
         return res.status(500).json({
           
             message: 'Internal Server Error'  

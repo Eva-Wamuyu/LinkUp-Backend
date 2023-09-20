@@ -1,5 +1,5 @@
 import { DB } from '../../DBHelpers/index.js'; 
-import { getUserByUsername,updateUserDetails,getUsersToFollow } from '../../Controllers/user.Controller.js';
+import { getUserByUsername,updateUserDetails,getUsersToFollow,getUserProfile } from '../../Controllers/user.Controller.js';
 import { validateUpdateSchema } from '../../Validators/userValidators.js';
 
 
@@ -213,6 +213,56 @@ describe("USER CONTROLLER, GET USERS TO FOLLOW",()=>{
         }
         await DB.exec.mockRejectedValueOnce(new Error('Database error'));
         await getUsersToFollow(reqMock, resMock);
+        expect(resMock.status).toHaveBeenCalledWith(500);
+        expect(resMock.json).toHaveBeenCalledWith({
+            message: 'Internal Server Error'  
+        });
+        jest.clearAllMocks();
+    });
+
+});
+
+
+describe("USER CONTROLLER, GET PROFILE",()=>{
+    
+    it('should get the info about a user', async () => {
+        const reqMock = {
+            info: {
+                subject: "username",
+            }
+        };
+        const user = [
+            {}
+        ]
+ 
+            
+        DB.exec.mockResolvedValue({recordset: user});
+        await getUserProfile(reqMock, resMock);
+        expect(DB.exec).toHaveBeenCalledWith(
+            'usp_GetUserInfo',{
+             username: reqMock.info.subject,
+             user_id: ''
+            }
+        )
+        expect(resMock.json).toHaveBeenCalledWith({
+            status: 'ok',
+            user: user[0]  
+        });
+       
+        jest.clearAllMocks();
+    });
+
+ 
+
+
+    it('should return a 500 For Database Error found', async () => {
+        const reqMock = {
+            info: {
+                subject: "username",
+            }
+        };
+        await DB.exec.mockRejectedValueOnce(new Error('Database error'));
+        await getUserProfile(reqMock, resMock);
         expect(resMock.status).toHaveBeenCalledWith(500);
         expect(resMock.json).toHaveBeenCalledWith({
             message: 'Internal Server Error'  
