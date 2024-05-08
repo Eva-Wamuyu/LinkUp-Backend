@@ -2,20 +2,23 @@ import { DB } from '../DBHelpers/index.js';
 import { v4 as uuidv4 } from 'uuid';
 import { validatePostSchema } from '../Validators/postValidators.js';
 
-
+const validateInput = (req, res) => {
+    const { error } = validatePostSchema.validate(req.body);
+    if (error) {
+        return res.status(422).json({
+            message: error.message,
+        });
+    }
+    return true;
+};
 
 
 export const createPost = async (req, res) =>{
+    if (!validateInput(req, res)) return;
     try {
         const username = req.info.subject;
         // console.log(req.info);
-        const { error } = validatePostSchema.validate(req.body);
-        if (error) {
-			return res.status(422).json({
-				
-				message: error.message,
-			});
-		}
+
         const { content, image_url } = req.body;
         const post_id = uuidv4();
         const response = await DB.exec('usp_CreatePost', {
@@ -46,16 +49,10 @@ export const createPost = async (req, res) =>{
 
 
 export const editPost = async(req,res)=>{
+
+    if (!validateInput(req, res)) return;
     try {
         const username = req.info.subject;
-        const { error } = validatePostSchema.validate(req.body);
-        if (error) {
-			return res.status(422).json({
-				
-				message: error.message,
-			});
-		}
-
         const post_id = req.params.post_id;
         const {content, image_url} = req.body;
         const response = await DB.exec('usp_EditPost',{username,post_id,content,image_url})
