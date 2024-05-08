@@ -1,16 +1,23 @@
 import { validateCommentSchema } from "../Validators/commentValidators.js";
 import { DB } from '../DBHelpers/index.js';
 
+
+
+const validateInput = (req, res) => {
+    const { error } = validateCommentSchema.validate(req.body);
+    if (error) {
+        return res.status(422).json({
+            message: error.message,
+        });
+    }
+    return true;
+};
+
 export const createComment = async (req, res) =>{
+    if (!validateInput(req, res)) return;
+
     try {
         
-        const { error } = validateCommentSchema.validate(req.body);
-        if (error) {
-			return res.status(422).json({
-				
-				message: error.message,
-			});
-		}
         const username = req.info.subject;
         const post_id = req.params.post_id;
 
@@ -48,15 +55,9 @@ export const createComment = async (req, res) =>{
 }
 
 export const editComment = async(req,res)=>{
-    try {
 
-        const { error } = validateCommentSchema.validate(req.body);
-        if (error) {
-			return res.status(422).json({
-				
-				message: error.message,
-			});
-		}
+    if (!validateInput(req, res)) return;
+    try {
         const username = req.info.subject;
         const comment_id = req.params.comment_id;
         const {content} = req.body;
@@ -111,16 +112,11 @@ export const deleteComment = async(req,res)=>{
 }
 
 export const createSubComment = async(req,res)=>{
+
+    if (!validateInput(req, res)) return;
     try {
         const username = req.info.subject;
         const comment_id = req.params.comment_id;
-        const { error } = validateCommentSchema.validate(req.body);
-        if (error) {
-			return res.status(422).json({
-				
-				message: error.message,
-			});
-		}
         const  content = req.body.content;
         const response = await DB.exec('usp_CreateSubComment', {
             comment_id,
