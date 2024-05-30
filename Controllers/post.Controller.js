@@ -17,7 +17,6 @@ export const createPost = async (req, res) =>{
     if (!validateInput(req, res)) return;
     try {
         const username = req.info.subject;
-        // console.log(req.info);
 
         const { content, image_url } = req.body;
         const post_id = uuidv4();
@@ -39,7 +38,6 @@ export const createPost = async (req, res) =>{
             message: 'Error Adding Post',
         });
     } catch (error) {
-        //  console.log(error)
         return res.status(500).json({
             
             message: 'Internal Server Error', 
@@ -69,7 +67,6 @@ export const editPost = async(req,res)=>{
             }); 
         }
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
           
             message: 'Internal Server Error',
@@ -209,7 +206,6 @@ export const getPostCommentDetails = async(req,res)=>{
                       parentComment.subcomments.push(comment); 
                   }
                   else{
-                    // console.log(parentComment.subcomments)
                     parentComment.subcomments.push(comment);
                   }
                 }

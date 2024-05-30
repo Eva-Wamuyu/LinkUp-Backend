@@ -7,7 +7,6 @@ export const followUser = async(req,res)=>{
         const follower_id = req.info.issuer;
         const following_id = req.params.user_id;
         
-        // console.log(follower_id, following_id)
         const response = (await DB.exec('usp_FollowOrUnfollowUser',{follower_id, following_id}));
          
         const message = response.recordset[0].Message;
@@ -25,7 +24,6 @@ export const followUser = async(req,res)=>{
         }        
 
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             message: 'Internal Server Error',
                

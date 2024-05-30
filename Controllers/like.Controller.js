@@ -17,7 +17,6 @@ export const likePost = async(req,res)=>{
        
         }
         else{
-            // console.log(message);
             return res.status(200).json({
                 status: 'ok',
                 message
@@ -25,7 +24,6 @@ export const likePost = async(req,res)=>{
         }        
 
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             message: 'Internal Server Error',
                
@@ -42,7 +40,6 @@ export const likeComment = async(req,res)=>{
         const response = (await DB.exec('usp_LikeUnlikeComment',{username, comment_id}));
          
         const message = response.recordset[0].Message;
-        // console.log(message);
         if(message == 'Comment with that ID not found'){
             return res.status(404).json({
                 message,   
@@ -50,7 +47,6 @@ export const likeComment = async(req,res)=>{
        
         }
         else{
-            // console.log(message);
             return res.status(200).json({
                 status: 'ok',
                 message
@@ -58,7 +54,6 @@ export const likeComment = async(req,res)=>{
         }        
 
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             message: 'Internal Server Error',
                

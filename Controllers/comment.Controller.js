@@ -103,7 +103,6 @@ export const deleteComment = async(req,res)=>{
             });    
         }
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             
             message: 'Internal Server Error',   
@@ -136,7 +135,6 @@ export const createSubComment = async(req,res)=>{
             message:message
         });
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
            
             message: 'Internal Server Error', 
@@ -157,7 +155,6 @@ export const getUserComments = async(req,res)=>{
         }
         else{
             const response = await DB.exec('usp_GetUserComments',{username})
-            // console.log(response)
             return res.status(200).json({
                 status: "ok",
                 comments:response.recordset 
