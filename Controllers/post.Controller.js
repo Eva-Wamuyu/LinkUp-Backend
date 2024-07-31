@@ -5,9 +5,8 @@ import { validatePostSchema } from '../Validators/postValidators.js';
 const validateInput = (req, res) => {
     const { error } = validatePostSchema.validate(req.body);
     if (error) {
-        return res.status(422).json({
-            message: error.message,
-        });
+        res.status(422).json({ message: error.message });
+        return false;
     }
     return true;
 };

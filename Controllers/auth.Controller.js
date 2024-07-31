@@ -182,38 +182,41 @@ export const resetPassword = async(req,res)=>{
     }
 }
 
-export const updatePassword = async(req,res)=>{
+export const updatePassword = async (req, res) => {
     try {
-        const encrypted = req.params.token
-        let details = {}
-        jwt.verify(encrypted,process.env.JWT_SECRET,(err,decoded)=>{
-            if(err instanceof jwt.TokenExpiredError){
-                return res.status(403).json({message: "Token expired"});
+        const encrypted = req.params.token;
+        let details;
+
+        try {
+            details = jwt.verify(encrypted, process.env.JWT_SECRET);
+        } catch (err) {
+            if (err instanceof jwt.TokenExpiredError) {
+                return res.status(403).json({ message: "Token expired" });
             }
-            if(err){
-                return res.status(403).json({message: err});
-            }
-            details = decoded;
-        })
-        
-        const result = await DB.exec('usp_CheckToken',{username:details.username,token:details.token})
-        if(result.rowsAffected == 1){
+            return res.status(403).json({ message: "Token verification failed" });
+        }
+
+        const result = await DB.exec('usp_CheckToken', { username: details.username, token: details.token });
+        if (result.rowsAffected === 0) {
+            return res.status(404).json({
+                message: 'Reset Link Expired, Use the latter link',
+            });
+        }
+
         const password = req.body.password;
         const hashed_password = await bcrypt.hash(password, 5);
-        const res_ = await DB.exec('usp_UpdatePassword',{password:hashed_password,username:details.username});
+        const res_ = await DB.exec('usp_UpdatePassword', { password: hashed_password, username: details.username });
 
-        if(res_.rowsAffected == 1){
+        if(res_.rowsAffected === 1) {
             return res.status(200).json({
                 status: "ok",
                 message: 'Password updated successfully',
             });
+        }else{
+            return res.status(500).json({
+                message: 'Unable to update password',
+            });
         }
-    }
-    else{
-        return res.status(404).json({
-            message: 'Reset Link Expired, Use the latter link',
-    });  
-    }
     } catch (error) {
         return res.status(500).json({
             message: 'Internal Server Error',

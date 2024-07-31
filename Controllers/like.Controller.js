@@ -35,7 +35,7 @@ export const likePost = async(req,res)=>{
 export const likeComment = async(req,res)=>{
     try {
         const username = req.info.subject;
-        const comment_id = req.params.comment_id;
+        const comment_id = parseInt(req.params.comment_id, 10);
         
         const response = (await DB.exec('usp_LikeUnlikeComment',{username, comment_id}));
          
