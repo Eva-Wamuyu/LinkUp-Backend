@@ -6,9 +6,8 @@ import { DB } from '../DBHelpers/index.js';
 const validateInput = (req, res) => {
     const { error } = validateCommentSchema.validate(req.body);
     if (error) {
-        return res.status(422).json({
-            message: error.message,
-        });
+        res.status(422).json({ message: error.message });
+        return false;
     }
     return true;
 };
@@ -103,7 +102,6 @@ export const deleteComment = async(req,res)=>{
             });    
         }
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             
             message: 'Internal Server Error',   
@@ -136,7 +134,6 @@ export const createSubComment = async(req,res)=>{
             message:message
         });
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
            
             message: 'Internal Server Error', 
@@ -157,7 +154,6 @@ export const getUserComments = async(req,res)=>{
         }
         else{
             const response = await DB.exec('usp_GetUserComments',{username})
-            // console.log(response)
             return res.status(200).json({
                 status: "ok",
                 comments:response.recordset 

@@ -1,34 +1,36 @@
 import { DB } from '../DBHelpers/index.js';
 
 
-export const followUser = async(req,res)=>{
+export const followUser = async (req, res) => {
     try {
-
         const follower_id = req.info.issuer;
         const following_id = req.params.user_id;
-        
-        // console.log(follower_id, following_id)
-        const response = (await DB.exec('usp_FollowOrUnfollowUser',{follower_id, following_id}));
-         
+
+        const response = await DB.exec('usp_FollowOrUnfollowUser', { follower_id, following_id });
+
         const message = response.recordset[0].Message;
 
-        if(message == 'User with that Id not Found'){
+        if (message === 'Follower user with that Id not Found') {
             return res.status(404).json({
-                message: 'User with that Id not Found',   
+                message: 'Follower user with that Id not Found',
             });
-        }
-        else{
+        } else if (message === 'Following user with that Id not Found') {
+            return res.status(404).json({
+                message: 'Following user with that Id not Found',
+            });
+        } else if (message === 'User Unfollowed' || message === 'User Followed') {
             return res.status(200).json({
                 status: 'ok',
-                message
+                message,
             });
-        }        
-
+        } else {
+            return res.status(500).json({
+                message: 'Unexpected Error Occurred',
+            });
+        }
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             message: 'Internal Server Error',
-               
         });
     }
 }

@@ -13,7 +13,7 @@ export const sqlConfig = {
     },
     options: {
         encrypt: true, // for azure
-        trustServerCertificate: process.env.TRUSTSERVERCERTIFICATE, // change to true for local dev / self-signed certs
+        trustServerCertificate: true, // change to true for local dev / self-signed certs
     }
 }
 
