@@ -1,0 +1,40 @@
+@BASE_URL = http://localhost:3000/post
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJlZDEyZWZiYy02YTdhLTQzMmQtOTc3Mi01NjQwOWY3ZmNjMWUiLCJzdWJqZWN0IjoibGlua3VwVXNlciIsImlhdCI6MTcyMjUzMzkyMywiZXhwIjoxNzIyNzA2NzIzfQ.jfbO1fJu_-Uwcfmmx5VMZWNCk9idxYUFag_j7fdne_E
+
+
+
+### Add Comment /:post_id/comment
+POST {{BASE_URL}}/585d0e07-9745-4a72-bca9-1e400adf1da7/comment
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content": "comment content here"
+}
+
+### Edit Comment /comment/:comment_id
+PATCH {{BASE_URL}}/comment/2058
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content": "Updated comment content"
+}
+
+### Delete Comment /commnet/:comment_id
+DELETE {{BASE_URL}}/comment/2058
+Authorization: Bearer {{token}}
+
+### Add Subcomment /commnet/:comment_id
+POST {{BASE_URL}}/comment/2057
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content": "Your subcomment content here"
+}
+
+### Get Comments for a User /comment/user/:username
+GET {{BASE_URL}}/comment/user/linkupUser
+Authorization: Bearer {{token}}

@@ -1,0 +1,47 @@
+@BASE_URL = http://localhost:3000
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJlZDEyZWZiYy02YTdhLTQzMmQtOTc3Mi01NjQwOWY3ZmNjMWUiLCJzdWJqZWN0IjoibGlua3VwVXNlciIsImlhdCI6MTcyMjUzMzkyMywiZXhwIjoxNzIyNzA2NzIzfQ.jfbO1fJu_-Uwcfmmx5VMZWNCk9idxYUFag_j7fdne_E
+
+
+Headers
+Authorization:Bearer {{token}}
+
+
+
+### REGISTER
+###
+POST {{BASE_URL}}/user/auth/register
+Content-Type: application/json
+
+{
+    "email": "eva163516@gmail.com",
+    "username": "linkupUser",
+    "password": "linkupPassword"
+}
+
+
+### Login
+###
+
+POST {{BASE_URL}}/user/auth/login
+Content-Type: application/json
+
+{
+    "emailOrUsername": "linkupUser",
+    "password": "linkupPassword"
+}
+
+
+## Confirm Token
+### 
+POST {{BASE_URL}}/user/auth/check
+Content-Type: application/json
+Authorization: Bearer {{token}}
+# Reset Password - Send Token
+### 
+POST {{BASE_URL}}/user/auth/reset
+Content-Type: application/json
+
+{
+    "email": "eva163516@gmail.com"
+}

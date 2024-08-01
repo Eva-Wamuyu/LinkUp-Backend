@@ -58,7 +58,7 @@ export const editComment = async(req,res)=>{
     if (!validateInput(req, res)) return;
     try {
         const username = req.info.subject;
-        const comment_id = req.params.comment_id;
+        const comment_id = parseInt(req.params.comment_id, 10);
         const {content} = req.body;
         const response = await DB.exec('usp_EditComment',{username,comment_id,content})
         if(response.rowsAffected == 1){
@@ -85,7 +85,7 @@ export const editComment = async(req,res)=>{
 export const deleteComment = async(req,res)=>{
     try {
         const username = req.info.subject;
-        const comment_id = req.params.comment_id;
+        const comment_id = parseInt(req.params.comment_id, 10);
         const response = await DB.exec('usp_DeleteComment',{comment_id, username});
       
         const message = response.recordset[0]['Message'];
@@ -114,7 +114,7 @@ export const createSubComment = async(req,res)=>{
     if (!validateInput(req, res)) return;
     try {
         const username = req.info.subject;
-        const comment_id = req.params.comment_id;
+        const comment_id = parseInt(req.params.comment_id, 10);
         const  content = req.body.content;
         const response = await DB.exec('usp_CreateSubComment', {
             comment_id,
