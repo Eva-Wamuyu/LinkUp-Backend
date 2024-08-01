@@ -1,0 +1,18 @@
+@BASE_URL = http://localhost:3000/like
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJlZDEyZWZiYy02YTdhLTQzMmQtOTc3Mi01NjQwOWY3ZmNjMWUiLCJzdWJqZWN0IjoibGlua3VwVXNlciIsImlhdCI6MTcyMjUzMzkyMywiZXhwIjoxNzIyNzA2NzIzfQ.jfbO1fJu_-Uwcfmmx5VMZWNCk9idxYUFag_j7fdne_E
+
+# Headers
+Authorization: Bearer {{token}}
+
+### Like Post /post/:post_id
+POST {{BASE_URL}}/post/087190ca-b86b-4ebe-a44c-fa5e86ef2047
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+
+### Like Comment /comment/:comment_id
+POST {{BASE_URL}}/comment/2059
+Authorization: Bearer {{token}}
+Content-Type: application/json

@@ -4,23 +4,28 @@ CREATE OR ALTER PROCEDURE usp_FollowOrUnfollowUser
     @following_id VARCHAR(255)
 AS
 BEGIN
-    IF EXISTS (SELECT 1 FROM [User] WHERE user_id = @follower_id)
+    IF NOT EXISTS (SELECT 1 FROM [User] WHERE user_id = @follower_id)
     BEGIN
-        IF EXISTS (SELECT 1 FROM Follow WHERE follower_id = @follower_id AND following_id = @following_id)
-        BEGIN
-            DELETE FROM Follow WHERE follower_id = @follower_id AND following_id = @following_id;
-			SELECT 'User Unfollowed' AS Message
-        END
-        ELSE
-        BEGIN
-            INSERT INTO Follow (follower_id, following_id)
-            VALUES (@follower_id, @following_id);
-			SELECT 'User Followed' AS Message
-        END
+        SELECT 'Follower user with that Id not Found' AS Message;
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM [User] WHERE user_id = @following_id)
+    BEGIN
+        SELECT 'Following user with that Id not Found' AS Message;
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Follow WHERE follower_id = @follower_id AND following_id = @following_id)
+    BEGIN
+        DELETE FROM Follow WHERE follower_id = @follower_id AND following_id = @following_id;
+        SELECT 'User Unfollowed' AS Message;
     END
     ELSE
     BEGIN
-		SELECT 'User with that Id not Found' AS Message
+        INSERT INTO Follow (follower_id, following_id)
+        VALUES (@follower_id, @following_id);
+        SELECT 'User Followed' AS Message;
     END
 END;
 

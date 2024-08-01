@@ -179,7 +179,7 @@ BEGIN
     FROM Post P
     INNER JOIN [User] U ON P.username = U.username
     LEFT JOIN [Like] L ON P.post_id = L.post_id AND L.username = @username
-    WHERE P.post_id = @post_id;
+    WHERE P.post_id = @post_id AND P.deleted = 0;
 END
 GO
 

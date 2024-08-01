@@ -1,0 +1,32 @@
+@BASE_URL = http://localhost:3000
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJlZDEyZWZiYy02YTdhLTQzMmQtOTc3Mi01NjQwOWY3ZmNjMWUiLCJzdWJqZWN0IjoibGlua3VwVXNlciIsImlhdCI6MTcyMjUzMzA5MSwiZXhwIjoxNzIyNzA1ODkxfQ.rkCIIScmK-mXBmGiEqiMIbUW0zc9md1Hc7BmGyxWTk8
+
+# Headers
+Authorization: Bearer {{token}}
+
+
+### Get User Details By UserName - {{BASE_URL}}/user/:username
+
+GET {{BASE_URL}}/user/linkupUser
+Authorization: Bearer {{token}}
+
+### Update User Details - {{BASE_URL}}/user/
+PATCH {{BASE_URL}}/user/
+Authorization: Bearer {{token}}
+
+Content-Type: application/json
+
+{
+    "bio": "Bio bio"
+}
+
+
+### Route to get all users to follow.
+
+GET {{BASE_URL}}/user/all/connect
+Authorization: Bearer {{token}}
+
+### Route to get the profile of the logged-in user.
+GET {{BASE_URL}}/user/info/profile
+Authorization: Bearer {{token}}

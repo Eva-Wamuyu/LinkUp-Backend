@@ -1,0 +1,43 @@
+@BASE_URL = http://localhost:3000
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJlZDEyZWZiYy02YTdhLTQzMmQtOTc3Mi01NjQwOWY3ZmNjMWUiLCJzdWJqZWN0IjoibGlua3VwVXNlciIsImlhdCI6MTcyMjUzMzkyMywiZXhwIjoxNzIyNzA2NzIzfQ.jfbO1fJu_-Uwcfmmx5VMZWNCk9idxYUFag_j7fdne_E
+
+
+
+### Add Post
+POST {{BASE_URL}}/post
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content": "post content here"
+}
+
+### Edit Post - /post/:post_id
+PATCH {{BASE_URL}}/post/585d0e07-9745-4a72-bca9-1e400adf1da7
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "content": "Updated post content here"
+}
+
+### Delete Post /post/:post_id
+DELETE {{BASE_URL}}/post/ace353f0-0795-458d-892f-e323aae6fdc3
+Authorization: Bearer {{token}}
+
+### Get One Post Details /post/:post_id
+GET {{BASE_URL}}/post/585d0e07-9745-4a72-bca9-1e400adf1da7
+Authorization: Bearer {{token}}
+
+### Get Posts for One User /post/user/:username
+GET {{BASE_URL}}/post/user/linkupUser
+Authorization: Bearer {{token}}
+
+### Get All Posts
+GET {{BASE_URL}}/post
+Authorization: Bearer {{token}}
+
+### Get Posts Based on Following
+GET {{BASE_URL}}/post/all/following
+Authorization: Bearer {{token}}
