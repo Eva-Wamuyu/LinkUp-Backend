@@ -1,0 +1,20 @@
+@BASE_URL = http://localhost:3000/follow
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJlZDEyZWZiYy02YTdhLTQzMmQtOTc3Mi01NjQwOWY3ZmNjMWUiLCJzdWJqZWN0IjoibGlua3VwVXNlciIsImlhdCI6MTcyMjUzMzkyMywiZXhwIjoxNzIyNzA2NzIzfQ.jfbO1fJu_-Uwcfmmx5VMZWNCk9idxYUFag_j7fdne_E
+
+# Headers
+Authorization: Bearer {{token}}
+
+### Follow/Unfollow User
+POST {{BASE_URL}}/1b194034-e347-42e9-9610-b786044ea4eb
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+### Get Followers
+GET {{BASE_URL}}/followers/users
+Authorization: Bearer {{token}}
+
+### Get Following
+GET {{BASE_URL}}/following/users
+Authorization: Bearer {{token}}

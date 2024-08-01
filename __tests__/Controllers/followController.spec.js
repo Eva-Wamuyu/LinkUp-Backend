@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 describe("FOLLOW CONTROLLER - FOLLOW OR UNFOLLOW USER", () => {
-   
+
     it("Should return 404 if the User being followed is not found", async()=>{
         const reqMock = {
             info: {
@@ -26,14 +26,14 @@ describe("FOLLOW CONTROLLER - FOLLOW OR UNFOLLOW USER", () => {
                 user_id: "following_id"
             }
         }
-        const message = 'User with that Id not Found'
-        DB.exec.mockResolvedValue({ recordset: [{Message: message}] });
-        await followUser(reqMock,resMock)
+        const message = 'Following user with that Id not Found';
+        DB.exec.mockResolvedValue({ recordset: [{ Message: message }] });
+        await followUser(reqMock, resMock);
         expect(resMock.status).toHaveBeenCalledWith(404);
         expect(resMock.json).toHaveBeenCalledWith({
             message
         });
-    })
+    });
 
     it("Should Follow A User", async()=>{
         const reqMock = {
@@ -44,17 +44,17 @@ describe("FOLLOW CONTROLLER - FOLLOW OR UNFOLLOW USER", () => {
                 user_id: "following_id"
             }
         }
-        const message = "User Followed"
+        const message = "User Followed";
         DB.exec.mockResolvedValue({ recordset: [{Message: message}] });
-        await followUser(reqMock,resMock)
+        await followUser(reqMock,resMock);
         expect(resMock.status).toHaveBeenCalledWith(200);
         expect(resMock.json).toHaveBeenCalledWith({
             status: 'ok',
-            message 
+            message
         });
-    })
+    });
 
-    it("Should UnFollow A User", async()=>{
+    it("Should UnFollow A User", async()=> {
         const reqMock = {
             info: {
                 issuer: "follower_id"
@@ -63,15 +63,15 @@ describe("FOLLOW CONTROLLER - FOLLOW OR UNFOLLOW USER", () => {
                 user_id: "following_id"
             }
         }
-        const message = "User Unfollowed"
-        DB.exec.mockResolvedValue({ recordset: [{Message: message}] });
-        await followUser(reqMock,resMock)
+        const message = "User Unfollowed";
+        DB.exec.mockResolvedValue({ recordset: [{ Message: message }] });
+        await followUser(reqMock, resMock);
         expect(resMock.status).toHaveBeenCalledWith(200);
         expect(resMock.json).toHaveBeenCalledWith({
             status: 'ok',
-            message 
+            message
         });
-    })
+    });
 
     it("Should Throw 500 for DB Error", async()=>{
         const reqMock = {
@@ -82,16 +82,16 @@ describe("FOLLOW CONTROLLER - FOLLOW OR UNFOLLOW USER", () => {
                 user_id: "following_id"
             }
         }
-        const message = "Internal Server Error"
-        await DB.exec.mockRejectedValueOnce(new Error(message));
-        await followUser(reqMock,resMock)
+        const message = "Internal Server Error";
+        DB.exec.mockRejectedValueOnce(new Error(message));
+        await followUser(reqMock,resMock);
         expect(resMock.status).toHaveBeenCalledWith(500);
         expect(resMock.json).toHaveBeenCalledWith({
-            message 
+            message
         });
-    })
+    });
+});
 
-})
 
 
 describe("FOLLOW CONTROLLER - GET FOLLOWERS", () => {
