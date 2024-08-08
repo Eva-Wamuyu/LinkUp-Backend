@@ -162,73 +162,65 @@ export const getAllPosts = async(req, res)=>{
     }
 }
 
-
-export const getPostCommentDetails = async(req,res)=>{
+export const getPostCommentDetails = async (req, res) => {
     try {
-        const username = req.info.subject || null;
-        const post_id = req.params.post_id;
-
-        const result =  await DB.exec('usp_GetPostById',{post_id,username})
-
-        if(result.rowsAffected[0] == 0){
-            return res.status(404).json({
-             
-                message: 'Post With That Id Not Found'
-                   
-            }); 
-        }
-        else{
-            const post = result.recordset[0]
-            const response = await DB.exec('usp_GetPostDetails',{post_id,username});
-            const allComments = response.recordset
-
-            const comments = [];
-
-            const CommentObj = {};
-
-            allComments.forEach(comment => {
-
-            const commentId = comment.comment_id;
-
-            if(comment.level_1_comment_id == null){
-                comments.push({
-                    comment
-                });
-            }
-            else{
-                const parentComment = CommentObj[comment.level_1_comment_id]
-
-                if (parentComment) {
-                
-                if (!parentComment.subcomments) {
-                      parentComment.subcomments = [];
-                      parentComment.subcomments.push(comment); 
-                  }
-                  else{
-                    parentComment.subcomments.push(comment);
-                  }
-                }
-                }           
-                CommentObj[commentId] = comment;
-                });
-
-                return res.status(200).json({
-                    status: 'ok',
-                    post,
-                    comments
-                 }); 
-                }
-
+      const username = req.info.subject || null;
+      const post_id = req.params.post_id;
+  
+      const post = await getPostById(post_id, username);
+      if (!post) {
+        return res.status(404).json({ message: 'Post With That Id Not Found' });
+      }
+      const allComments = await getPostDetails(post_id, username);
+      const comments = organizeComments(allComments);
+  
+      return res.status(200).json({
+        status: 'ok',
+        post,
+        comments
+      });
+  
     } catch (error) {
-        
-        return res.status(500).json({
-          
-            message: 'Internal Server Error',
-            
-        });
-        
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+};
+  
+const getPostById = async (post_id, username) => {
+    const result = await DB.exec('usp_GetPostById', { post_id, username });
+    if (result.rowsAffected[0] === 0) return null;
+    return result.recordset[0];
+};
+  
+const getPostDetails = async (post_id, username) => {
+    const response = await DB.exec('usp_GetPostDetails', { post_id, username });
+    return response.recordset;
+};
+  
+const organizeComments = (allComments) => {
+    const comments = [];
+    const commentMap = {};
+  
+    allComments.forEach(comment => {
+      const commentId = comment.comment_id;
+  
+      if (comment.level_1_comment_id === null) {
+        comments.push({ comment });
+      } else {
+        const parentComment = commentMap[comment.level_1_comment_id];
+        if (parentComment) {
+          if (!parentComment.subcomments) {
+            parentComment.subcomments = [];
+          }
+          parentComment.subcomments.push(comment);
+        }
+      }
+      commentMap[commentId] = comment;
+    });
+  
+    return comments;
+};
+  
+
 
 
 export const getPostsForFollowing = async(req,res)=>{
