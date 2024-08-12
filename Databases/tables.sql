@@ -80,3 +80,8 @@ CREATE TABLE ResetToken (
   token VARCHAR(15) NOT NULL,
   FOREIGN KEY (username) REFERENCES [User](username)
 );
+
+
+CREATE NONCLUSTERED INDEX idx_username_user_id
+ON [User](username, user_id);
+G0

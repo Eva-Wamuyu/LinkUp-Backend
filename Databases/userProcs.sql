@@ -3,19 +3,23 @@ CREATE OR ALTER PROCEDURE usp_CheckUserExists
     @email NVARCHAR(255)
 AS
 BEGIN
-    IF EXISTS (SELECT 1 FROM [User] WHERE username = @username)
+    DECLARE @Message NVARCHAR(255);
+    SELECT TOP 1 
+        @Message = CASE 
+                    WHEN username = @username THEN 'Username already exists.'
+                    WHEN email = @email THEN 'Email already exists.'
+                   END
+    FROM [User]
+    WHERE username = @username OR email = @email;
+
+    IF @Message IS NOT NULL
     BEGIN
-        SELECT 'Username already exists.' AS Message
-        RETURN;
-    END
-    IF EXISTS (SELECT 1 FROM [User] WHERE email = @email)
-    BEGIN
-        SELECT 'Email already exists.' AS Message
+        SELECT @Message AS Message;
         RETURN;
     END
 
     SELECT 'User can be registered.' AS Message;
-END
+END;
 
 GO
 CREATE OR ALTER PROCEDURE usp_AddUser
@@ -26,8 +30,8 @@ CREATE OR ALTER PROCEDURE usp_AddUser
 AS
 BEGIN
     INSERT INTO [User] (user_id,username, email, password)
+    OUTPUT INSERTED.user_id, INSERTED.username
     VALUES (@user_id, @username,@email, @password);
-    SELECT user_id,username FROM [User] WHERE user_id=@user_id
 END;
 
 
@@ -48,20 +52,26 @@ CREATE OR ALTER PROCEDURE usp_GetUserInfo
     @user_id VARCHAR(255)
 AS
 BEGIN
-    SELECT
-        CASE WHEN EXISTS (SELECT 1 FROM Follow WHERE follower_id = @user_id AND following_id = u.user_id) THEN 1 ELSE 0 END AS follows,
-        CASE WHEN EXISTS (SELECT 1 FROM Follow WHERE follower_id = u.user_id AND following_id = @user_id) THEN 1 ELSE 0 END AS followed,
-        (SELECT COUNT(*) FROM Follow WHERE following_id = u.user_id) AS followers,
-        (SELECT COUNT(*) FROM Follow WHERE follower_id = u.user_id) AS following,
-        (SELECT COUNT(*) FROM Post WHERE username = u.username AND deleted=0) AS posts,
+    SELECT 
+        CASE WHEN f1.follower_id IS NOT NULL THEN 1 ELSE 0 END AS follows,
+        CASE WHEN f2.following_id IS NOT NULL THEN 1 ELSE 0 END AS followed,
+        COUNT(DISTINCT f3.follower_id) AS followers,
+        COUNT(DISTINCT f4.following_id) AS following,
+        COUNT(DISTINCT p.post_id) AS posts,
         u.profile_image,
-        u.bio AS bio,
+        u.bio,
         u.joined_at,
         u.username,
         u.user_id
     FROM [User] u
-    WHERE u.username = @username;
-END
+    LEFT JOIN Follow f1 ON f1.follower_id = @user_id AND f1.following_id = u.user_id
+    LEFT JOIN Follow f2 ON f2.follower_id = u.user_id AND f2.following_id = @user_id
+    LEFT JOIN Follow f3 ON f3.following_id = u.user_id
+    LEFT JOIN Follow f4 ON f4.follower_id = u.user_id
+    LEFT JOIN Post p ON p.username = u.username AND p.deleted = 0
+    WHERE u.username = @username
+    GROUP BY u.user_id, u.username, u.profile_image, u.bio, u.joined_at, f1.follower_id, f2.following_id;
+END;
 
 
 
