@@ -107,46 +107,45 @@ CREATE OR ALTER PROCEDURE usp_getAllUserPosts
     @username2 VARCHAR(255)
 AS
 BEGIN
-    CREATE TABLE #TempPosts (
-        post_id VARCHAR(255),
-        username VARCHAR(255),
-        created_at DATETIME,
-        num_likes INT,
-        num_comments INT,
-        content NVARCHAR(1000),
-        image_url_post VARCHAR(255), 
-        image_url_user VARCHAR(255), 
-        has_liked BIT
-    );
-    
-    INSERT INTO #TempPosts (post_id, username, created_at, num_likes, num_comments, content, image_url_post, image_url_user, has_liked)
+    SET NOCOUNT ON;
+    ;WITH PostDetails AS (
+        SELECT
+            P.post_id,
+            P.username,
+            P.created_at,
+            P.content,
+            P.image_url AS image_url_post,
+            U.profile_image AS image_url_user,
+            COALESCE(L.likes_count, 0) AS num_likes,
+            COALESCE(C.comments_count, 0) AS num_comments,
+            CASE WHEN L2.username IS NOT NULL THEN 1 ELSE 0 END AS has_liked
+        FROM Post P
+        INNER JOIN [User] U ON P.username = U.username
+        LEFT JOIN (
+            SELECT post_id, COUNT(*) AS likes_count
+            FROM [Like]
+            GROUP BY post_id
+        ) L ON P.post_id = L.post_id
+        LEFT JOIN (
+            SELECT post_id, COUNT(*) AS comments_count
+            FROM Comment
+            GROUP BY post_id
+        ) C ON P.post_id = C.post_id
+        LEFT JOIN [Like] L2 ON P.post_id = L2.post_id AND L2.username = @username2
+        WHERE P.deleted = 0
+        AND P.username = @username
+    )
     SELECT
-        P.post_id,
-        U.username,
-        P.created_at,
-        (
-            SELECT COUNT(*) FROM [Like] L1
-            WHERE L1.post_id = P.post_id
-        ) AS likes,
-        (
-            SELECT COUNT(*) FROM Comment C1
-            WHERE C1.post_id = P.post_id
-        ) AS comments,
-        P.content,
-        P.image_url AS image_url_post,
-        U.profile_image AS image_url_user, 
-        CASE WHEN EXISTS (
-            SELECT 1 FROM [Like] L2
-            WHERE L2.post_id = P.post_id AND L2.username = @username2
-        ) THEN 1 ELSE 0 END AS has_liked
-    FROM Post P 
-    INNER JOIN [User] U ON P.username = U.username
-    WHERE P.deleted = 0
-    AND P.username = @username; 
-
-    SELECT * FROM #TempPosts;
-
-    DROP TABLE #TempPosts;
+        post_id,
+        username,
+        created_at,
+        num_likes,
+        num_comments,
+        content,
+        image_url_post,
+        image_url_user,
+        has_liked
+    FROM PostDetails;
 END;
 
 
