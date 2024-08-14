@@ -223,3 +223,30 @@ BEGIN
     ORDER BY COALESCE(CS.level_1_comment_id, CS.comment_id), CS.comment_id;
 END
 GO
+
+
+CREATE OR ALTER PROCEDURE usp_GetFollowedUsersPosts
+    @username VARCHAR(255)
+AS
+BEGIN
+    SELECT 
+        p.post_id,
+        p.username,
+        p.content,
+        p.image_url,
+        p.created_at,
+        p.edited_at
+    FROM 
+        Post p
+    INNER JOIN 
+        [User] u_followed ON p.username = u_followed.username
+    INNER JOIN 
+        Follow f ON f.following_id = u_followed.user_id
+    INNER JOIN 
+        [User] u_follower ON f.follower_id = u_follower.user_id
+    WHERE 
+        u_follower.username = @username
+        AND p.deleted = 0 
+    ORDER BY 
+        p.created_at DESC;
+END;

@@ -43,7 +43,6 @@ export const updateUserDetails = async(req,res)=>{
         }
         const {bio, profile_image} = req.body;
         const response = await DB.exec('usp_UpdateUserProfile',{user_id, bio, profile_image})
-        // console.log(response)
         return res.status(200).json({
             status: 'ok',
             message: 'Updated profile successfully'  

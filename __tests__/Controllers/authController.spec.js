@@ -4,7 +4,7 @@ import {generateAccessToken} from '../../Middleware/index.js';
 import { validateRegisterSchema,validateloginSchema,validateResetEmail } from '../../Validators/userValidators.js';
 import { DB } from '../../DBHelpers/index.js'; 
 import { sendResetLink } from '../../MailService/sendResetLink.js';
-// import { v4 as uuidv4 } from 'uuid';
+
 const reqMock = {
     body: {
       username: "userNameTest",
@@ -47,10 +47,7 @@ jest.mock('../../MailService/sendResetLink.js', () => ({
   sendResetLink: jest.fn(),
   
 }));
-// jest.mock('uuid', () => ({
-//   uuidv4: jest.fn(),
-  
-// }));
+
 
 describe("USER CONTROLLER, REGISTER USER",()=>{
     afterEach(() => {

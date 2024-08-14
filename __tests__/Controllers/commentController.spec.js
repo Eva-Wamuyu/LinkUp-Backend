@@ -358,9 +358,7 @@ describe("COMMENTS CONTROLLER- CREATE COMMENT", () =>{
             body:{
                content: "test comment"
             },
-            // params:{
-            //    post_id: "1231",
-            // }
+           
         }
         
         validateCommentSchema.validate.mockReturnValue({ error: null });

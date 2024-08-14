@@ -223,10 +223,30 @@ const organizeComments = (allComments) => {
 
 
 
-export const getPostsForFollowing = async(req,res)=>{
+export const getPostsForFollowing = async (req, res) => {
     try {
-        
+        const username = req.info.subject;
+        if (!username) {
+            return res.status(401).json({
+                message: 'Unauthorized to perform the request',
+            });
+        }
+        const response = await DB.exec('usp_GetFollowedUsersPosts', { username });
+
+        if (response.recordset.length === 0) {
+            return res.status(404).json({
+                status: 'ok',
+                posts: [],
+            });
+        }
+
+        return res.status(200).json({
+            status: 'ok',
+            posts: response.recordset,
+        });
     } catch (error) {
-        
+        return res.status(500).json({
+            message: 'Internal Server Error',
+        });
     }
-}
+};
