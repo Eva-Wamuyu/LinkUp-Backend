@@ -37,22 +37,30 @@ export const updateUserDetails = async(req,res)=>{
         const {error} = validateUpdateSchema.validate(req.body);
         if (error) {
             return res.status(422).json({
-			
-				message: error.message,
-			});
+                message: error.message,
+            });
         }
         const {bio, profile_image} = req.body;
-        const response = await DB.exec('usp_UpdateUserProfile',{user_id, bio, profile_image})
-        return res.status(200).json({
-            status: 'ok',
-            message: 'Updated profile successfully'  
-        }); 
+        const response = await DB.exec('usp_UpdateUserProfile', {
+            user_id: user_id,
+            bio: bio,
+            profile_image: profile_image
+        });
+        if (response.rowsAffected > 0) {
+            return res.status(200).json({
+                status: 'ok',
+                message: 'Updated profile successfully'
+            });
+        } else {
+            return res.status(404).json({
+                status: 'error',
+                message: 'User not found or no changes made'
+            });
+        }
 
-        
     } catch (error) {
         return res.status(500).json({
             message: 'Internal Server Error',
-               
         });
     }
 }

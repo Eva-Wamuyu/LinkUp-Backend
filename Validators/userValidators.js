@@ -5,7 +5,7 @@ const validateRegisterSchema = Joi.object({
     username: Joi.string()
         .required()
         .min(3)
-        .pattern(new RegExp('^[a-zA-Z][a-zA-Z0-9_]*$'))
+        .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/)
         .messages({
             'string.base': 'Invalid Name Format',
             'string.empty': 'Username is required',
@@ -23,7 +23,7 @@ const validateRegisterSchema = Joi.object({
         }),
     password: Joi.string()
         .required()
-        .pattern(new RegExp('^.{6,}'))
+        .min(6)
         .messages({
             'string.base': 'Password should be a string',
             'string.empty': 'Password is required',
