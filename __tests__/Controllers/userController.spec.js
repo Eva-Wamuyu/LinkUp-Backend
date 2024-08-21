@@ -127,8 +127,8 @@ describe("USER CONTROLLER, UPDATE USER DETAILS",()=>{
             }
         };
 
-        validateUpdateSchema.validate.mockResolvedValueOnce({error:null})
-        await DB.exec.mockResolvedValue({});
+        validateUpdateSchema.validate.mockResolvedValueOnce({error:null});
+        DB.exec.mockResolvedValue({ rowsAffected: [1]});
         await updateUserDetails(reqMock, resMock);
         expect(DB.exec).toHaveBeenCalledWith(
             'usp_UpdateUserProfile',{
