@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { generateAccessToken } from '../Middleware/index.js';
 import { validateRegisterSchema, validateloginSchema,validateResetEmail } from '../Validators/userValidators.js';
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import dotenv from 'dotenv'; dotenv.config();
 import { sendResetLink } from '../MailService/sendResetLink.js';
 
@@ -155,7 +156,7 @@ export const resetPassword = async(req,res)=>{
 			const user_mail = user.email;
 			const username = user.username;
             
-            const token = Math.random().toString(36).slice(2, 8);
+            const token = crypto.randomBytes(3).toString('hex');
 			const response = await DB.exec('usp_AddToken', { username, token });
             
             if(response.rowsAffected[0] == 1){
