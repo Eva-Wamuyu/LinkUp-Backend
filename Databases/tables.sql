@@ -85,3 +85,6 @@ CREATE TABLE ResetToken (
 CREATE NONCLUSTERED INDEX idx_username_user_id
 ON [User](username, user_id);
 G0
+
+ALTER TABLE ResetToken
+ADD used BIT DEFAULT 0;

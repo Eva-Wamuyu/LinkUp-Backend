@@ -163,19 +163,16 @@ export const resetPassword = async(req,res)=>{
                 expiresIn: '3h'
             })
 			const link = `${process.env.FE_URL}${encrypted}`;
-			sendResetLink(user_mail, username, link);
+			await sendResetLink(user_mail, username, link);
 
 			return res.status(200).json({
 				status: 'ok',
 				message: 'Reset Link Sent To Your Email',
 			});
         }
-        return res.status(500).json({
-            message: 'Internal Server Error',
-        });
        }
     } catch (error) {
-      
+
         return res.status(500).json({
             message: 'Internal Server Error',
         });
@@ -197,17 +194,22 @@ export const updatePassword = async (req, res) => {
         }
 
         const result = await DB.exec('usp_CheckToken', { username: details.username, token: details.token });
-        if (result.rowsAffected === 0) {
+        if (result.rowsAffected[0] === 0) {
             return res.status(404).json({
-                message: 'Reset Link Expired, Use the latter link',
+                message: 'Reset Link Expired or used. Request for a new one',
             });
         }
 
         const password = req.body.password;
+        if (!password) {
+            return res.status(400).json({
+                message: 'Password is required',
+            });
+        }
         const hashed_password = await bcrypt.hash(password, 5);
         const res_ = await DB.exec('usp_UpdatePassword', { password: hashed_password, username: details.username });
 
-        if(res_.rowsAffected === 1) {
+        if(res_.rowsAffected[0] === 1) {
             return res.status(200).json({
                 status: "ok",
                 message: 'Password updated successfully',

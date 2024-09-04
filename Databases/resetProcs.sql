@@ -4,7 +4,7 @@ CREATE OR ALTER PROCEDURE usp_CheckToken
 @token VARCHAR(255)
 AS
 BEGIN
-SELECT * FROM ResetToken WHERE username = @username AND token = @token
+SELECT * FROM ResetToken WHERE username = @username AND token = @token AND used = 0;
 END
 
 GO
@@ -27,4 +27,14 @@ CREATE OR ALTER PROCEDURE usp_UpdatePassword
 AS
 BEGIN
 UPDATE [User] SET password = @password WHERE username = @username
+EXEC usp_MarkTokenAsUsed @username;
 END
+
+
+GO
+CREATE OR ALTER PROCEDURE usp_MarkTokenAsUsed
+@username VARCHAR(255)
+AS
+BEGIN
+    UPDATE ResetToken SET used = 1 WHERE username = @username;
+END;
