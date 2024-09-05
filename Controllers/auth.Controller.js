@@ -189,7 +189,7 @@ export const updatePassword = async (req, res) => {
             details = jwt.verify(encrypted, process.env.JWT_SECRET);
         } catch (err) {
             if (err instanceof jwt.TokenExpiredError) {
-                return res.status(403).json({ message: "Token expired" });
+                return res.status(403).json({ message: "Token expired, Request for a new one" });
             }
             return res.status(403).json({ message: "Token verification failed" });
         }
