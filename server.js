@@ -14,6 +14,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('Linkup:Hello World!');
+});
+
 app.use('/user', userRouter);
 app.use('/post',postRouter)
 app.use('/post',commentRouter)
@@ -21,7 +25,8 @@ app.use('/follow',followRouter)
 app.use('/like',likeRouter)
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT)
-
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
 
 export default app;
