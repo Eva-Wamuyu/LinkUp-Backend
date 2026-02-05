@@ -23,16 +23,8 @@ jobs:
 
         - name: Package application
           run: |
-<<<<<<< Updated upstream
-            tar \
-            --warning=no-file-changed \
-            --exclude=node_modules \
-            --exclude=.git \
-            --exclude=.env \
-=======
             tar --exclude=node_modules --exclude=.git --exclude=.env \
             --exclude=app.tgz \
->>>>>>> Stashed changes
             -czf app.tgz .
 
         - name: upload package
