@@ -6,11 +6,16 @@ export class DB {
 
     static async exec(storedProcedure, data = {}) {
         try {
-            let request =  (await mssql.connect(sqlConfig)).request();
-            request = this.addData(request, data);
-            return request.execute(storedProcedure);
+            const pool = mssql.connect(sqlConfig);
+            const request = this.addData(pool.request(), data);
+            return await request.execute(storedProcedure);
         } catch (error) {
-            return error
+            console.log("DB.EXEC Stored procedure failed", {
+                storedProcedure,
+                message: error.message,
+                stack: error.stack
+            })
+            throw error;
         }
     }
 
