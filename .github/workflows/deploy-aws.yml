@@ -23,7 +23,11 @@ jobs:
 
         - name: Package application
           run: |
-            tar --exclude=node_modules --exclude=.git --exclude=.env --exclude=env* \
+            tar \
+            --warning=no-file-changed \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.env \
             -czf app.tgz .
 
         - name: upload package
