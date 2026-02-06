@@ -24,9 +24,9 @@ jobs:
         - name: Package application
           run: |
             tar --exclude=node_modules --exclude=.git --exclude=.env \
-            --exclude=app.tgz \
-            --warning=no-file-changed \
-            -czf app.tgz .
+            -czf /tmp/app.tgz .
+
+            mv /tmp/app.tgz ./app.tgz
 
         - name: upload package
           uses: appleboy/scp-action@v1
