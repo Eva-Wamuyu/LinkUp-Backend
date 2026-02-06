@@ -25,6 +25,7 @@ jobs:
           run: |
             tar --exclude=node_modules --exclude=.git --exclude=.env \
             --exclude=app.tgz \
+            --warning=no-file-changed \
             -czf app.tgz .
 
         - name: upload package
@@ -46,11 +47,25 @@ jobs:
             port: ${{ secrets.EC2_PORT }}
             script: |
                 set -e
-                sudo mkdir -p /var/www/myapp
-                sudo chown ubuntu:ubuntu /var/www/myapp
-                tar -xzf /tmp/app.tgz -C /var/www/myapp
-                cd /var/www/myapp
+
+                #new release folder
+                RELEASE_DIR="/var/www/myapp-$(date +%s)"
+                sudo mkdir -p $RELEASE_DIR
+                sudo chown ubuntu:ubuntu $RELEASE_DIR
+
+                # extract to new directiory
+                tar -xzf /tmp/app.tgz -C $RELEASE_DIR
+                cd $RELEASE_DIR
                 npm ci --omit=dev
-                sudo systemctl restart myapp
+
+                # stop service, change directories and restart
+                sudo systemctl stop myapp
+                sudo rm -rf /var/www/myapp-old
+                sudo mv /var/www/myapp /var/www/myapp-old || true
+                sudo mv $RELEASE_DIR /var/www/myapp
+                sudo systemctl start myapp
                 sudo systemctl is-active --quiet myapp
+
+                # cleanup
                 rm /tmp/app.tgz
+                sudo rm -rf /var/www/myapp-old
