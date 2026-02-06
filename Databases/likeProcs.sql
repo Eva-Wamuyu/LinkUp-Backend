@@ -69,3 +69,4 @@ BEGIN
         SELECT 'Comment Liked' AS Message;
     END
 END;
+GO

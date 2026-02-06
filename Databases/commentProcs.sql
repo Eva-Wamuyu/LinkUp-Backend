@@ -93,4 +93,5 @@ FROM Comment AS c
 INNER JOIN Post AS p ON c.post_id = p.post_id AND p.deleted=0  
 WHERE c.username = @username AND c.deleted = 0  
 ORDER BY c.created_at;  
-END  
+END
+GO

@@ -1,3 +1,4 @@
+GO
 CREATE OR ALTER PROCEDURE usp_CheckUserExists
     @username NVARCHAR(255),
     @email NVARCHAR(255)
@@ -34,17 +35,13 @@ BEGIN
     VALUES (@user_id, @username,@email, @password);
 END;
 
-
 GO
 CREATE OR ALTER PROCEDURE usp_GetUserByMailOrUsername
     @emailOrUsername VARCHAR(255)
 AS
 BEGIN
-	SELECT * from [User] where email = @emailOrUsername or username =  @emailOrUsername
-    
+    SELECT * from [User] where email = @emailOrUsername or username =  @emailOrUsername
 END;
-
-
 
 GO
 CREATE OR ALTER PROCEDURE usp_GetUserInfo
@@ -73,9 +70,6 @@ BEGIN
     GROUP BY u.user_id, u.username, u.profile_image, u.bio, u.joined_at, f1.follower_id, f2.following_id;
 END;
 
-
-
-
 GO
 CREATE OR ALTER PROCEDURE usp_UpdateUserProfile
     @user_id VARCHAR(255),
@@ -90,7 +84,6 @@ BEGIN
     WHERE
         user_id = @user_id;
 END;
-
 
 GO
 
@@ -116,14 +109,14 @@ BEGIN
     FROM [User] u
     WHERE u.user_id <> @user_id
     ORDER BY u.username ASC
-END
+END;
 
 GO
 CREATE OR ALTER PROCEDURE usp_GetUserByUsername
     @username VARCHAR(255)
 AS
 BEGIN
-	SELECT username from [User] WHERE username =  @username
+    SELECT username from [User] WHERE username =  @username
 END;
 
 GO
@@ -131,5 +124,6 @@ CREATE OR ALTER PROCEDURE usp_GetUserByMail
     @email VARCHAR(255)
 AS
 BEGIN
-SELECT user_id,username,email from [User] where email = @email
+    SELECT user_id,username,email from [User] where email = @email
 END;
+GO

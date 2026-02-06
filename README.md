@@ -18,7 +18,13 @@ npm test
 
 ### K6 Tests
 
-
+### DB setting up
+```bash
+# make deploy_db.sh executable and run it
+# linux
+chmod +x deploy_db.sh
+./deploy_db.sh
+```
 ## API Documentation
 
 Detailed API documentation is available [here](https://github.com/Eva-Wamuyu/LinkUp-Backend/blob/main/API-docs.md)

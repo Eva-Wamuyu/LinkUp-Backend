@@ -77,3 +77,4 @@ BEGIN
     WHERE
         F1.following_id = @user_id;
 END;
+GO
