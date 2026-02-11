@@ -1,5 +1,6 @@
 # LinkUp-Backend
 
+[![Deploy to ec2](https://github.com/Eva-Wamuyu/LinkUp-Backend/actions/workflows/deploy-aws.yml/badge.svg)](https://github.com/Eva-Wamuyu/LinkUp-Backend/actions/workflows/deploy-aws.yml)
 
 ## Setup
 * npm install
